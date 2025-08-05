@@ -12,6 +12,8 @@ set(SRC
   serdes_binary.cpp
   serdes_binary.hpp
   serdes_binary_v8.hpp
+  serdes_geojson.cpp
+  serdes_geojson.hpp
   serdes_gpx.cpp
   serdes_gpx.hpp
   type_utils.cpp

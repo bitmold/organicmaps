@@ -349,6 +349,36 @@ public:
     RestoreContext(outerContext);
   }
 
+  void operator()(std::map<std::string, std::string> & dst, char const * name = nullptr)
+  {
+      json_t * outerContext = SaveContext(name);
+
+      if (!json_is_object(m_json))
+      {
+          MYTHROW(base::Json::Exception,
+                  ("The field", name, "must contain a json object.", json_dumps(m_json, 0)));
+      }
+
+      void* iter = json_object_iter(m_json);
+      while (iter) {
+          const char *key;
+          json_t *value;
+
+          key = json_object_iter_key(iter);
+          value = json_object_iter_value(iter);
+          if (json_is_string(value)) {
+              dst[key] = json_string_value(value);
+          }
+          else {
+              MYTHROW(base::Json::Exception,
+                      ("Value for key", key, "must be a string.", json_dumps(value, 0)));
+          }
+
+          iter = json_object_iter_next(m_json, iter);
+      }
+      RestoreContext(outerContext);
+  }
+
   template <typename Key, typename Value>
   void operator()(std::pair<Key, Value> & dst, char const * name = nullptr)
   {
