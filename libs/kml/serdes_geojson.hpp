@@ -51,8 +51,20 @@ struct GeoJsonGeometry {
   template <typename Visitor>
   void Visit(Visitor & visitor) const
   {
-    // TODO!
+    visitor(m_type, "type");
+    visitor(m_coordinates, "coordinates");
   }
+
+  bool operator==(GeoJsonGeometry const & data) const
+  {
+      return m_type == data.m_type && m_coordinates == data.m_coordinates;
+  }
+
+  bool operator!=(GeoJsonGeometry const & data) const
+  {
+      return !operator==(data);
+  }
+
 
   friend std::string DebugPrint(GeoJsonGeometry const & c)
   {
@@ -83,10 +95,10 @@ struct GeoJsonFeature
   GeoJsonGeometry m_geometry;
   std::map<std::string, std::string> m_properties;
 
-  // Returns 'true' if there's geometry with type==Point.
+  // Returns 'true' if geometry type is 'Point'.
   bool isPoint();
 
-  // Returns 'true' if there's geometry with type==LineString.
+  // Returns 'true' if geometry type is 'LineString'.
   bool isLine();
 };
 
@@ -100,7 +112,7 @@ struct GeoJsonData
 
   bool operator==(GeoJsonData const & data) const
   {
-    return m_type == data.m_type;
+    return m_type == data.m_type && m_features == data.m_features && m_properties == data.m_properties;
   }
 
   bool operator!=(GeoJsonData const & data) const
