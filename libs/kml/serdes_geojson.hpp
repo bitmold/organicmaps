@@ -148,7 +148,7 @@ public:
   explicit GeojsonParser(FileData & data): m_fileData(data) {};
 
   template <typename ReaderType>
-  void Parse(ReaderType const & reader)
+  bool Parse(ReaderType const & reader)
   {
     geojson::GeoJsonData geoJsonData;
     NonOwningReaderSource source(reader);
@@ -171,14 +171,14 @@ public:
                 kml::SetDefaultStr(descr, feature.m_properties["description"]);
                 bookmark.m_description = descr;
             }
-            if (feature.m_properties.contains("marker-color")) {
-                //auto const markerColor = feature.m_properties["marker-color"];
-                //bookmark.m_color = TODO;
-            }
-            if (feature.m_properties.contains("marker-symbol")) {
+            //if (feature.m_properties.contains("marker-color")) {
+            //    auto const markerColor = feature.m_properties["marker-color"];
+            //    bookmark.m_color = ;
+            //}
+            //if (feature.m_properties.contains("marker-symbol")) {
                 //auto const markerSymbol = feature.m_properties["marker-symbol"];
                 //bookmark.m_color = TODO;
-            }
+            //}
             bookmark.m_point = point;
             m_fileData.m_bookmarksData.push_back(bookmark);
         }
@@ -199,6 +199,8 @@ public:
             m_fileData.m_tracksData.push_back(track);
         }
     }
+
+    return true;
   }
 
 private:
@@ -206,5 +208,34 @@ private:
 };
 
 }  // namespace geojson
+
+class DeserializerGeoJson
+{
+public:
+    DECLARE_EXCEPTION(DeserializeException, RootException);
+
+    explicit DeserializerGeoJson(FileData & fileData): m_fileData(fileData) {};
+
+    template <typename ReaderType>
+    void Deserialize(ReaderType const & reader)
+    {
+        NonOwningReaderSource src(reader);
+
+        geojson::GeojsonParser parser(m_fileData);
+        if (!parser.Parse(reader))
+        {
+            // Print corrupted GeoJson file for debug and restore purposes.
+            std::string jsonText;
+            reader.ReadAsString(jsonText);
+            if (!jsonText.empty() && jsonText[0] == '{')
+                LOG(LWARNING, (jsonText));
+            MYTHROW(DeserializeException, ("Could not parse GeoJson."));
+        }
+    }
+
+private:
+    FileData & m_fileData;
+};
+
 
 }  // namespace kml
