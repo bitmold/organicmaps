@@ -162,24 +162,37 @@ public:
         {
             auto const point = feature.m_geometry.m_coordinates[0];
             BookmarkData bookmark;
+            // Parse label
             if (feature.m_properties.contains("name")) {
                 auto name = kml::LocalizableString();
                 kml::SetDefaultStr(name, feature.m_properties["name"]);
                 bookmark.m_name = name;
             }
+            else if (feature.m_properties.contains("label")) {
+                auto name = kml::LocalizableString();
+                kml::SetDefaultStr(name, feature.m_properties["label"]);
+                bookmark.m_name = name;
+            }
+
+            // Parse description
             if (feature.m_properties.contains("description")) {
                 auto descr = kml::LocalizableString();
                 kml::SetDefaultStr(descr, feature.m_properties["description"]);
                 bookmark.m_description = descr;
             }
+
+            // Parse color
             //if (feature.m_properties.contains("marker-color")) {
             //    auto const markerColor = feature.m_properties["marker-color"];
             //    bookmark.m_color = ;
             //}
+
+            // Parse icon
             //if (feature.m_properties.contains("marker-symbol")) {
                 //auto const markerSymbol = feature.m_properties["marker-symbol"];
-                //bookmark.m_color = TODO;
+                //bookmark.m_icon = TODO;
             //}
+
             bookmark.m_point = point;
             m_fileData.m_bookmarksData.push_back(bookmark);
         }
@@ -191,11 +204,18 @@ public:
         {
             auto const points = feature.m_geometry.m_coordinates;
             TrackData track;
+            // Parse label
             if (feature.m_properties.contains("name")) {
                 auto name = kml::LocalizableString();
                 kml::SetDefaultStr(name, feature.m_properties["name"]);
                 track.m_name = name;
             }
+            else if (feature.m_properties.contains("label")) {
+                auto name = kml::LocalizableString();
+                kml::SetDefaultStr(name, feature.m_properties["label"]);
+                track.m_name = name;
+            }
+
             track.m_geometry.AddLine(points);
             m_fileData.m_tracksData.push_back(track);
         }
