@@ -330,6 +330,19 @@ extension GlobalStyleSheet: IStyleSheet {
       return .addFrom(Self.flatNormalTransButton) { s in
         s.font = fonts.regular17
       }
+    case .flatNormalGrayButtonBig:
+      return .add { s in
+        s.font = fonts.medium15
+        s.cornerRadius = .buttonDefaultBig
+        s.clip = true
+        s.fontColor = colors.linkBlue
+        s.tintColor = colors.linkBlue
+        s.backgroundColor = colors.pressBackground
+        s.fontColorHighlighted = colors.linkBlueHighlighted
+        s.fontColorDisabled = colors.blackSecondaryText
+        s.tintColorDisabled = colors.blackSecondaryText
+        s.backgroundColorHighlighted = colors.blackDividers
+      }
     case .flatGrayTransButton:
       return .add { s in
         s.font = fonts.medium14
