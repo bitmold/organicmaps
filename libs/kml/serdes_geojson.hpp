@@ -7,6 +7,7 @@
 #include "coding/serdes_json.hpp"
 
 #include "base/exception.hpp"
+#include "geometry/mercator.hpp"
 
 namespace kml
 {
@@ -30,7 +31,7 @@ struct GeoJsonGeometry {
         //ERROR!
       }
       m_coordinates.resize(1);
-      m_coordinates.at(0) = m2::PointD(coordData[0], coordData[1]);
+      m_coordinates.at(0) = mercator::FromLatLon(coordData[1], coordData[0]);
     }
 
     else if (m_type == "LineString") {
@@ -40,7 +41,7 @@ struct GeoJsonGeometry {
       m_coordinates.resize(polygonData.size());
       for(size_t i=0; i<polygonData.size(); i++) {
         auto pairCoords = polygonData[i];
-        m_coordinates.at(i) = m2::PointD(pairCoords[0], pairCoords[1]);
+        m_coordinates.at(i) = mercator::FromLatLon(pairCoords[1], pairCoords[0]);
       }
     }
     else {
