@@ -12,6 +12,7 @@ class PlacePageInteractor: NSObject {
   private let bookmarksManager = BookmarksManager.shared()
   private var placePageData: PlacePageData
   private var viewWillAppearIsCalledForTheFirstTime = false
+  private let impactGenerator = UIImpactFeedbackGenerator(style: .medium)
 
   init(viewController: UIViewController, data: PlacePageData, mapViewController: MapViewController) {
     self.placePageData = data
@@ -20,6 +21,7 @@ class PlacePageInteractor: NSObject {
     super.init()
     addToBookmarksManagerObserverList()
     subscribeOnTrackActivePointUpdates()
+    impactGenerator.prepare()
   }
 
   deinit {
@@ -146,13 +148,14 @@ extension PlacePageInteractor: PlacePageInfoViewControllerDelegate {
   }
   
   func didCopy(_ content: String) {
+    impactGenerator.impactOccurred()
     UIPasteboard.general.string = content
     let message = String(format: L("copied_to_clipboard"), content)
-    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     Toast.show(withText: message, alignment: .bottom)
   }
 
   func didPressOpenInApp(from sourceView: UIView) {
+    impactGenerator.impactOccurred()
     let availableApps = OpenInApplication.availableApps
     guard !availableApps.isEmpty else {
       LOG(.warning, "Applications selection sheet should not be presented when the list of available applications is empty.")
@@ -179,14 +182,17 @@ extension PlacePageInteractor: WikiDescriptionViewControllerDelegate {
 
 extension PlacePageInteractor: PlacePageOSMContributionViewControllerDelegate {
   func didPressAddPlace() {
+    impactGenerator.impactOccurred()
     MWMPlacePageManagerHelper.addPlace(placePageData.locationCoordinate)
   }
 
   func didPressEditPlace() {
+    impactGenerator.impactOccurred()
     MWMPlacePageManagerHelper.editPlace()
   }
 
   func didPressUpdateMap() {
+    impactGenerator.impactOccurred()
     startDownloading()
   }
 }
