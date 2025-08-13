@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kml/types.hpp"
+#include "kml/color_parser.hpp"
 
 #include "coding/writer.hpp"
 #include "coding/reader.hpp"
@@ -182,10 +183,13 @@ public:
             }
 
             // Parse color
-            //if (feature.m_properties.contains("marker-color")) {
-            //    auto const markerColor = feature.m_properties["marker-color"];
-            //    bookmark.m_color = ;
-            //}
+            if (feature.m_properties.contains("marker-color")) {
+                auto const markerColor = feature.m_properties["marker-color"];
+                auto colorRGBA = ParseColor(markerColor);
+                if (colorRGBA) {
+                    bookmark.m_color = {.m_rgba = *colorRGBA};
+                }
+            }
 
             // Parse icon
             //if (feature.m_properties.contains("marker-symbol")) {
@@ -214,6 +218,15 @@ public:
                 auto name = kml::LocalizableString();
                 kml::SetDefaultStr(name, feature.m_properties["label"]);
                 track.m_name = name;
+            }
+
+            // Parse color
+            if (feature.m_properties.contains("stroke")) {
+                auto const markerColor = feature.m_properties["stroke"];
+                auto colorRGBA = ParseColor(markerColor);
+                if (colorRGBA) {
+                    track.m_layers.push_back(TrackLayer{.m_color = ColorData{.m_rgba = *colorRGBA}});
+                }
             }
 
             track.m_geometry.AddLine(points);

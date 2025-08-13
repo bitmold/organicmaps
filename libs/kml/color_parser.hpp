@@ -17,5 +17,6 @@ constexpr uint32_t ToRGBA(Channel red, Channel green, Channel blue, Channel alph
 std::optional<uint32_t> ParseHexColor(std::string_view c);
 std::optional<uint32_t> ParseGarminColor(std::string_view c);
 std::optional<uint32_t> ParseOSMColor(std::string_view c);
+std::optional<uint32_t> ParseColor(std::string_view c);
 
 }  // namespace kml
