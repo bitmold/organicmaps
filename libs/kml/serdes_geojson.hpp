@@ -187,7 +187,7 @@ public:
                 auto const markerColor = feature.m_properties["marker-color"];
                 auto colorRGBA = ParseColor(markerColor);
                 if (colorRGBA) {
-                    bookmark.m_color = {.m_rgba = *colorRGBA};
+                    bookmark.m_color = ColorData{.m_rgba = *colorRGBA};
                 }
             }
 
